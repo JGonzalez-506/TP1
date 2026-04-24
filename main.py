@@ -3,6 +3,9 @@
 #Última modificación:
 #Versión 3.14.3
 
+#Importaciones
+import funciones
+
 #Definición de funciones
 def submenu(opt):
     if opt == 1:
