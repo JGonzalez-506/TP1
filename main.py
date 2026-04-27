@@ -7,14 +7,19 @@
 import funciones
 
 #Definición de funciones
-def submenu(opt):
+def submenu(opt,tokens):
     if opt == 1:
         return "A"
     elif opt == 2:
         return "B"
-def menu(opt):
+def menu(opt,tokens):
     if opt == 1:
-        return "1"
+        nombreArchivo = input("Indique el nombre del archivo donde están almacenados los tokens, no escriba la extención del archivo: ")
+        separador = int(input("Indique el separador utilizado:\n1-'->'\n2-','\n3-'='\nOpción: "))
+        while separador not in [1,2,3]:
+            separador = int(input("Indique el separador utilizado:\n1-'->'\n2-','\n3-'='"))
+        tokens = funciones.cargarTokens(nombreArchivo,separador,tokens)
+        return tokens
     elif opt == 2:
         return "2"
     elif opt == 3:
@@ -37,11 +42,12 @@ def menu(opt):
         return "8"
 
 #Programa Principal
+tokens = []
 opt = int(input("Menú del sistema:\n1-Cargar tokens\n2-Mostar tokens\n3-Agregar/modificar tokens\n4-Guardar tokens\n"
             "5-Traducir código\n6-Generar CSV\n7-Generar HTML\n8-Submenú de bitácora del sistema\n9-Salir\n"
             "Porfavor digíte el número de la acción que desea realizar: "))
 while opt != 9:
-    print(menu(opt))
+    print(menu(opt,tokens))
     opt = int(input("\nMenú del sistema:\n1-Cargar tokens\n2-Mostar tokens\n3-Agregar/modificar tokens\n4-Guardar tokens\n"
           "5-Traducir código\n6-Generar CSV\n7-Generar HTML\n8-Submenú de bitácora del sistema\n9-Salir\n"
           "Porfavor digíte el número de la acción que desea realizar: "))
