@@ -23,7 +23,13 @@ def menu(opt,tokens):
     elif opt == 2:
         return "2"
     elif opt == 3:
-        return "3"
+        nuevosTokens = input("Porfavor ingrese los nuevos tokens, utilize un punto '.' para separar cada token, y utilize un separador"
+                             "entre el token y la equivalencia ('->', ',', '='): ")
+        separador = int(input("Indique el separador utilizado:\n1-'->'\n2-','\n3-'='\nOpción: "))
+        while separador not in [1, 2, 3]:
+            separador = int(input("Indique el separador utilizado:\n1-'->'\n2-','\n3-'='"))
+        tokens = funciones.agregrarModificarTokens(separador, tokens, nuevosTokens)
+        return tokens
     elif opt == 4:
         return "4"
     elif opt == 5:
