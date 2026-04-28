@@ -11,7 +11,6 @@ def validarToken(token):
         return True
     return False
 def cargarTokens(nombreArchivo,separador,tokens):
-    # token = tuple()
     if separador == 1:
         separador = " -> "
     elif separador == 2:
@@ -21,14 +20,17 @@ def cargarTokens(nombreArchivo,separador,tokens):
     archivo = open(f"{nombreArchivo}.txt", "r")
     for line in archivo:                            #Lee cada línea del archivo
         token = line.strip().split(separador)       #Crea una lista con el token y la equivalencia
+        repetido = False
         if not validarToken(token):
             print(f"El token '{token}' no es válido")
         else:
             token = (token[0], token[1])  # Pase de una lista a una tupla
-            for x in tokens:  # Lee cada equivalencia ya guardada en la lista de tokens
-                if x[0] == token[0]:  # Si el nuevo token ya existe, imprime que se va a reescribir
-                    print(f"Se reescribió el token '{token[0]}'")
-                    x = token
+            for indice, pos in enumerate(tokens):  # Lee cada equivalencia ya guardada en la lista de tokens
+                if pos[0] == token[0]:  # Si el nuevo token ya existe, imprime que se va a reescribir
+                    print(f"Se reescribió el token de '{token[0]}'")
+                    tokens[indice] = token
+                    repetido = True
+        if not repetido:
             tokens.append(token)
     archivo.close()
     return tokens
