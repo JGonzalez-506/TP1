@@ -40,6 +40,7 @@ def cargarTokens(nombreArchivo,separador,tokens):
     return tokens
 #Agregar o modificar tokens
 def agregrarModificarTokens(separador,tokens,nuevosTokens):
+    tokensAntiguos = tokens.copy()
     separador = escogerSeparador(separador)
     nuevosTokens = nuevosTokens.split(".")
     for token in nuevosTokens:
@@ -54,7 +55,14 @@ def agregrarModificarTokens(separador,tokens,nuevosTokens):
                     tokens[indice] = token
                     repetido = True
             if not repetido:
+                print(f"Se añadió el token de '{token}'")
                 tokens.append(token)
         else:
             print(f"El token '{token}' no es válido")
-    return tokens
+    print()
+    aceptar = int(input("Desea guardar los cambios realizados? Escoja una opción:\n1-Sí\n2-No\nDigíte su respuesta: "))
+    while aceptar not in [1, 2]:
+        aceptar = int(input("Desea guardar los cambios realizados? Escoja una opción:\n1-Sí\n2-No\nDigíte su respuesta: "))
+    if aceptar == 1:
+        return tokens
+    return tokensAntiguos
