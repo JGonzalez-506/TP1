@@ -66,3 +66,11 @@ def agregrarModificarTokens(separador,tokens,nuevosTokens):
     if aceptar == 1:
         return tokens
     return tokensAntiguos
+def mostrarTokens(tokens):
+    if len(tokens) == 0:
+        print("No hay tokens cargados.")
+        return
+    else :
+        print("Tokens Cargados hasta el momento:")
+        for original, equivalencia in tokens:
+            print(f"{original} -> {equivalencia}")
