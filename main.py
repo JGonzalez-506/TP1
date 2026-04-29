@@ -21,7 +21,7 @@ def menu(opt,tokens):
         tokens = funciones.cargarTokens(nombreArchivo,separador,tokens)
         return tokens
     elif opt == 2:
-        return "2"
+        return funciones.mostrarTokens(tokens)
     elif opt == 3:
         nuevosTokens = input("Porfavor ingrese los nuevos tokens, utilize un punto '.' para separar cada token, y utilize un separador"
                              "entre el token y la equivalencia ('->', ',', '='): ")
