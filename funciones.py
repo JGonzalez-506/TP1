@@ -66,11 +66,66 @@ def agregrarModificarTokens(separador,tokens,nuevosTokens):
     if aceptar == 1:
         return tokens
     return tokensAntiguos
+#Mostrar tokens
 def mostrarTokens(tokens):
     if len(tokens) == 0:
         print("No hay tokens cargados.")
-        return
-    else :
+    else:
         print("Tokens Cargados hasta el momento:")
         for original, equivalencia in tokens:
             print(f"{original} -> {equivalencia}")
+    return ""
+#Traducir código
+def validarTokens(llaves, tokens):
+    temp = []
+    for x in llaves:
+        for y in tokens:
+            if x[0] == y[0]:
+                temp.append(x)
+    if len(temp) > 0:
+        return temp
+    else:
+        return False
+def contarReemplazos(reemplazos, llaves):
+    for x in llaves:
+        if reemplazos != []:
+            repetido = False
+            for y in reemplazos:
+                if y[0] == x[0]:
+                    y[1] += 1
+                    repetido = True
+            if repetido == False:
+                reemplazos.append([x[0], 1])
+        else:
+            reemplazos.append([x[0], 1])
+    return reemplazos
+# def traducirLinea(llaves, tokens):
+#     return traduccion
+def traducirCodigo(archivo, nArchivo, tokens):
+    import re
+    reemplazos = []
+    llaves = []
+    temp = []
+    f = open(archivo, "r")
+    g = open(nArchivo, "a")
+    for line in f:
+        for llave in re.finditer(r"^[A-za-z0-9]$", line):
+            temp.append(llave.group())
+            temp.append(llave.start())
+            temp.append(llave.end())
+            llaves.append(temp)
+        llaves = validarTokens(llaves, tokens)
+        if llaves == False:
+            return "No hay reemplazos por hacer."
+        reemplazos = contarReemplazos(reemplazos, llaves)       #Cuenta las veces que se cambia una palabra
+        # traduccion = traducirLinea(llaves, tokens)
+        # g.write(traduccion)
+    f.close()
+    g.close()
+    return reemplazos
+def traducirCodigoAux(tokens):
+    archivo = input("Introduzca el archivo a traducir, indique la extensión: ")
+    nArchivo = input("Introduzca el nombre del archivo donde desea guardar la traducción, no escriba ninguna extensión: ")
+    nArchivo += ".txt"
+    reemplazos = traducirCodigo(archivo, nArchivo, tokens)
+    return reemplazos
