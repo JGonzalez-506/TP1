@@ -76,6 +76,31 @@ def mostrarTokens(tokens):
             print(f"{original} -> {equivalencia}")
     return ""
 #Traducir código
+def validarTokens(llaves, tokens):
+    temp = []
+    for x in llaves:
+        for y in tokens:
+            if x[0] == y[0]:
+                temp.append(x)
+    if len(temp) > 0:
+        return temp
+    else:
+        return False
+def contarReemplazos(reemplazos, llaves):
+    for x in llaves:
+        if reemplazos != []:
+            repetido = False
+            for y in reemplazos:
+                if y[0] == x[0]:
+                    y[1] += 1
+                    repetido = True
+            if repetido == False:
+                reemplazos.append([x[0], 1])
+        else:
+            reemplazos.append([x[0], 1])
+    return reemplazos
+# def traducirLinea(llaves, tokens):
+#     return traduccion
 def traducirCodigo(archivo, nArchivo, tokens):
     import re
     reemplazos = []
@@ -84,7 +109,17 @@ def traducirCodigo(archivo, nArchivo, tokens):
     f = open(archivo, "r")
     g = open(nArchivo, "a")
     for line in f:
-        g.write(traduccion)
+        for llave in re.finditer(r"^[A-za-z0-9]$", line):
+            temp.append(llave.group())
+            temp.append(llave.start())
+            temp.append(llave.end())
+            llaves.append(temp)
+        llaves = validarTokens(llaves, tokens)
+        if llaves == False:
+            return "No hay reemplazos por hacer."
+        reemplazos = contarReemplazos(reemplazos, llaves)       #Cuenta las veces que se cambia una palabra
+        # traduccion = traducirLinea(llaves, tokens)
+        # g.write(traduccion)
     f.close()
     g.close()
     return reemplazos
