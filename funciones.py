@@ -75,3 +75,22 @@ def mostrarTokens(tokens):
         for original, equivalencia in tokens:
             print(f"{original} -> {equivalencia}")
     return ""
+#Traducir código
+def traducirCodigo(archivo, nArchivo, tokens):
+    import re
+    reemplazos = []
+    llaves = []
+    temp = []
+    f = open(archivo, "r")
+    g = open(nArchivo, "a")
+    for line in f:
+        g.write(traduccion)
+    f.close()
+    g.close()
+    return reemplazos
+def traducirCodigoAux(tokens):
+    archivo = input("Introduzca el archivo a traducir, indique la extensión: ")
+    nArchivo = input("Introduzca el nombre del archivo donde desea guardar la traducción, no escriba ninguna extensión: ")
+    nArchivo += ".txt"
+    reemplazos = traducirCodigo(archivo, nArchivo, tokens)
+    return reemplazos
