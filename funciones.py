@@ -84,8 +84,13 @@ def validarTokens(llaves, tokens):
                 temp.append(x)
     if len(temp) > 0:
         return temp
-    else:
-        return False
+    return False
+def cambiarToken(token,tokens):
+    for x in tokens:
+        if x[0] == token:
+            token = x[1]
+            break
+    return token
 def contarReemplazos(reemplazos, llaves):
     for x in llaves:
         if reemplazos != []:
@@ -99,27 +104,51 @@ def contarReemplazos(reemplazos, llaves):
         else:
             reemplazos.append([x[0], 1])
     return reemplazos
-# def traducirLinea(llaves, tokens):
-#     return traduccion
+def traducirLinea(line, llaves, tokens):
+    indice = 0
+    primera = True
+    traduccion = ""
+    for x in range(len(llaves)):
+        cambioAct = llaves[indice]
+        token = cambioAct[0]
+        equivalencia = cambiarToken(token,tokens)
+        inicio = cambioAct[1]
+        fin = cambioAct[2]
+        if indice < len(llaves)-1:
+            cambioSig = llaves[indice + 1]
+            sig = cambioSig[1]
+            indice += 1
+        else:
+            sig = fin
+        if primera:
+            traduccion += line[:inicio] + equivalencia + line[fin:sig]
+            primera = False
+        else:
+            traduccion += equivalencia + line[fin:sig]
+    traduccion += line[fin:len(line)]
+    return traduccion
 def traducirCodigo(archivo, nArchivo, tokens):
     import re
     reemplazos = []
     llaves = []
-    temp = []
     f = open(archivo, "r")
     g = open(nArchivo, "a")
     for line in f:
-        for llave in re.finditer(r"^[A-za-z0-9]$", line):
+        for llave in re.finditer(r"[A-Za-z0-9]+", line):
+            temp = []
             temp.append(llave.group())
             temp.append(llave.start())
             temp.append(llave.end())
             llaves.append(temp)
         llaves = validarTokens(llaves, tokens)
         if llaves == False:
-            return "No hay reemplazos por hacer."
-        reemplazos = contarReemplazos(reemplazos, llaves)       #Cuenta las veces que se cambia una palabra
-        # traduccion = traducirLinea(llaves, tokens)
-        # g.write(traduccion)
+            print("No hay reemplazos por hacer.")
+            g.write(line)
+        else:
+            reemplazos = contarReemplazos(reemplazos, llaves)  # Cuenta las veces que se cambia una palabra
+            traduccion = traducirLinea(line, llaves, tokens)
+            g.write(traduccion)
+        llaves = []
     f.close()
     g.close()
     return reemplazos
