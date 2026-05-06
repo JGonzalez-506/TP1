@@ -66,11 +66,95 @@ def agregrarModificarTokens(separador,tokens,nuevosTokens):
     if aceptar == 1:
         return tokens
     return tokensAntiguos
+#Mostrar tokens
 def mostrarTokens(tokens):
     if len(tokens) == 0:
         print("No hay tokens cargados.")
-        return
-    else :
+    else:
         print("Tokens Cargados hasta el momento:")
         for original, equivalencia in tokens:
             print(f"{original} -> {equivalencia}")
+    return ""
+#Traducir código
+def validarTokens(llaves, tokens):
+    temp = []
+    for x in llaves:
+        for y in tokens:
+            if x[0] == y[0]:
+                temp.append(x)
+    if len(temp) > 0:
+        return temp
+    return False
+def cambiarToken(token,tokens):
+    for x in tokens:
+        if x[0] == token:
+            token = x[1]
+            break
+    return token
+def contarReemplazos(reemplazos, llaves):
+    for x in llaves:
+        if reemplazos != []:
+            repetido = False
+            for y in reemplazos:
+                if y[0] == x[0]:
+                    y[1] += 1
+                    repetido = True
+            if repetido == False:
+                reemplazos.append([x[0], 1])
+        else:
+            reemplazos.append([x[0], 1])
+    return reemplazos
+def traducirLinea(line, llaves, tokens):
+    indice = 0
+    primera = True
+    traduccion = ""
+    for x in range(len(llaves)):
+        cambioAct = llaves[indice]
+        token = cambioAct[0]
+        equivalencia = cambiarToken(token,tokens)
+        inicio = cambioAct[1]
+        fin = cambioAct[2]
+        if indice < len(llaves)-1:
+            cambioSig = llaves[indice + 1]
+            sig = cambioSig[1]
+            indice += 1
+        else:
+            sig = fin
+        if primera:
+            traduccion += line[:inicio] + equivalencia + line[fin:sig]
+            primera = False
+        else:
+            traduccion += equivalencia + line[fin:sig]
+    traduccion += line[fin:len(line)]
+    return traduccion
+def traducirCodigo(archivo, nArchivo, tokens):
+    import re
+    reemplazos = []
+    llaves = []
+    f = open(archivo, "r")
+    g = open(nArchivo, "a")
+    for line in f:
+        for llave in re.finditer(r"[A-Za-z0-9]+", line):
+            temp = []
+            temp.append(llave.group())
+            temp.append(llave.start())
+            temp.append(llave.end())
+            llaves.append(temp)
+        llaves = validarTokens(llaves, tokens)
+        if llaves == False:
+            print("No hay reemplazos por hacer.")
+            g.write(line)
+        else:
+            reemplazos = contarReemplazos(reemplazos, llaves)  # Cuenta las veces que se cambia una palabra
+            traduccion = traducirLinea(line, llaves, tokens)
+            g.write(traduccion)
+        llaves = []
+    f.close()
+    g.close()
+    return reemplazos
+def traducirCodigoAux(tokens):
+    archivo = input("Introduzca el archivo a traducir, indique la extensión: ")
+    nArchivo = input("Introduzca el nombre del archivo donde desea guardar la traducción, no escriba ninguna extensión: ")
+    nArchivo += ".txt"
+    reemplazos = traducirCodigo(archivo, nArchivo, tokens)
+    return reemplazos

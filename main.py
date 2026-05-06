@@ -33,7 +33,8 @@ def menu(opt,tokens):
     elif opt == 4:
         return "4"
     elif opt == 5:
-        return "5"
+        reemplazos = funciones.traducirCodigoAux(tokens)
+        return "Traducción finalizada"
     elif opt == 6:
         return "6"
     elif opt == 7:
@@ -46,7 +47,6 @@ def menu(opt,tokens):
             opt = int(input("\nSubmenú del sistema:\n1-Acciones por día escogido\n2-Acciones con algunas palabras clave\n3-Salir\n"
                 "Porfavor digíte el número de la acción que desea realizar: "))
         return "8"
-
 #Programa Principal
 tokens = []
 opt = int(input("Menú del sistema:\n1-Cargar tokens\n2-Mostar tokens\n3-Agregar/modificar tokens\n4-Guardar tokens\n"
