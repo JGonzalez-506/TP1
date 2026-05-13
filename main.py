@@ -1,4 +1,4 @@
-#Elaborado por: Juan González
+#Elaborado por: Juan González y Alessandro Arias
 #Fecha de creación: 24/04/2026  Hora: 13:23
 #Última modificación:
 #Versión 3.14.3
