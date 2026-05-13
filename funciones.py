@@ -110,6 +110,16 @@ def contarReemplazos(reemplazos, llaves):
         else:
             reemplazos.append([x[0], 1])
     return reemplazos
+def compararReemplazosTokens(reemplazos,tokens):
+    for x in tokens:
+        cambia = False
+        for y in reemplazos:
+            if x[0] == y[0]:
+                cambia = True
+                break
+        if cambia == False:
+            reemplazos.append([x[0], 0])
+    return reemplazos
 def traducirLinea(line, llaves, tokens):
     indice = 0
     primera = True
@@ -136,36 +146,41 @@ def traducirLinea(line, llaves, tokens):
 def traducirCodigo(archivo, nArchivo, tokens):
     reemplazos = []
     llaves = []
-    cronometroI = datetime.now()
-    f = open(archivo, "r")
-    g = open(nArchivo, "a")
-    for line in f:
-        for llave in re.finditer(r"[A-Za-z0-9]+", line):
-            temp = []
-            temp.append(llave.group())
-            temp.append(llave.start())
-            temp.append(llave.end())
-            llaves.append(temp)
-        llaves = validarTokens(llaves, tokens)
-        if llaves == False:
-            print("No hay reemplazos por hacer.")
-            g.write(line)
-        else:
-            reemplazos = contarReemplazos(reemplazos, llaves)  # Cuenta las veces que se cambia una palabra
-            traduccion = traducirLinea(line, llaves, tokens)
-            g.write(traduccion)
-        llaves = []
-    f.close()
-    g.close()
-    cronometroF = datetime.now()
-    tiempo = cronometroF - cronometroI
+    tiempo = 0.0
+    try:
+        cronometroI = datetime.now()
+        f = open(archivo, "r")
+        g = open(nArchivo, "a")
+        for line in f:
+            for llave in re.finditer(r"[A-Za-z0-9]+", line):
+                temp = []
+                temp.append(llave.group())
+                temp.append(llave.start())
+                temp.append(llave.end())
+                llaves.append(temp)
+            llaves = validarTokens(llaves, tokens)
+            if llaves == False:
+                print("No hay reemplazos por hacer.")
+                g.write(line)
+            else:
+                reemplazos = contarReemplazos(reemplazos, llaves)  # Cuenta las veces que se cambia una palabra
+                reemplazos = compararReemplazosTokens(reemplazos, tokens)
+                traduccion = traducirLinea(line, llaves, tokens)
+                g.write(traduccion)
+            llaves = []
+        f.close()
+        g.close()
+        cronometroF = datetime.now()
+        tiempo = cronometroF - cronometroI
+    except:
+        print(f"No se encuentra el archivo {archivo}")
     return reemplazos,tiempo
 def traducirCodigoAux(tokens):
     archivo = input("Introduzca el archivo a traducir, indique la extensión: ")
     nArchivo = input("Introduzca el nombre del archivo donde desea guardar la traducción, indique la extensión (Ej. traduccion.txt): ")
     reemplazos = traducirCodigo(archivo, nArchivo, tokens)
     return reemplazos
-def guardarTokens(tokens):
+def guardarTokens(tokens):  #Se eligió porque es una forma simple y rápida de guardar los datos sin necesidad de hacer cálculos adicionales.
     """
     Funcionamiento: Guarda los tokens en un archivo de texto utilizando un separador seleccionado por el usuario.
     Entradas: tokens (list).
@@ -217,7 +232,7 @@ def insertarBitacora(bitacora, descripcion):
     Entradas: bitacora (list), descripcion (str).
     Salidas: None.
     """
-    fechaHora = datetime.datetime.now()
+    fechaHora = datetime.now()
     fechaHora = fechaHora.strftime("%Y-%m-%d_%H:%M:%S")
     registro = (fechaHora, descripcion)
     bitacora.append(registro)
