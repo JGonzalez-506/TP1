@@ -12,49 +12,50 @@ def submenu(opt,tokens):
         return "A"
     elif opt == 2:
         return "B"
-def menu(opt,tokens):
-    if opt == 1:
-        nombreArchivo = input("Indique el nombre del archivo donde están almacenados los tokens, no escriba la extención del archivo: ")
-        separador = int(input("Indique el separador utilizado:\n1-'->'\n2-','\n3-'='\nOpción: "))
-        while separador not in [1,2,3]:
+def menu(opt,tokens,reemplazos,tiempo):
+    if opt == "1":
+        nombreArchivo = input("Indique el nombre del archivo .txt donde están almacenados los tokens: ")
+        separador = input("Indique el separador utilizado:\n1-'->'\n2-','\n3-'='\nOpción: ")
+        while separador not in "123":
             separador = int(input("Indique el separador utilizado:\n1-'->'\n2-','\n3-'='"))
         tokens = funciones.cargarTokens(nombreArchivo,separador,tokens)
-        return tokens
-    elif opt == 2:
-        return funciones.mostrarTokens(tokens)
-    elif opt == 3:
+    elif opt == "2":
+        print(funciones.mostrarTokens(tokens))
+    elif opt == "3":
         nuevosTokens = input("Porfavor ingrese los nuevos tokens, utilize un punto '.' para separar cada token, y utilize un separador"
                              "entre el token y la equivalencia ('->', ',', '='): ")
-        separador = int(input("Indique el separador utilizado:\n1-'->'\n2-','\n3-'='\nOpción: "))
-        while separador not in [1, 2, 3]:
-            separador = int(input("Indique el separador utilizado:\n1-'->'\n2-','\n3-'='"))
+        separador = input("Indique el separador utilizado:\n1-'->'\n2-','\n3-'='\nOpción: ")
+        while separador not in "123":
+            separador = input("Indique el separador utilizado:\n1-'->'\n2-','\n3-'='")
         tokens = funciones.agregrarModificarTokens(separador, tokens, nuevosTokens)
-        return tokens
-    elif opt == 4:
+    elif opt == "4":
         return "4"
-    elif opt == 5:
-        reemplazos = funciones.traducirCodigoAux(tokens)
-        return "Traducción finalizada"
-    elif opt == 6:
+    elif opt == "5":
+        reemplazos,tiempo = funciones.traducirCodigoAux(tokens)
+        print("Traducción finalizada")
+    elif opt == "6":
         return "6"
-    elif opt == 7:
-        return "7"
-    elif opt == 8:
+    elif opt == "7":
+        titulo = input("Ingrese el título para el reporte HTML: ")
+        print(funciones.generarHTML(titulo,reemplazos,tiempo,tokens))
+    elif opt == "8":
         opt = int(input("\nSubmenú del sistema:\n1-Acciones por día escogido\n2-Acciones con algunas palabras clave\n3-Salir\n"
                   "Porfavor digíte el número de la acción que desea realizar: "))
         while opt != 3:
             print(submenu(opt))
             opt = int(input("\nSubmenú del sistema:\n1-Acciones por día escogido\n2-Acciones con algunas palabras clave\n3-Salir\n"
                 "Porfavor digíte el número de la acción que desea realizar: "))
-        return "8"
+    return tokens,reemplazos,tiempo
 #Programa Principal
 tokens = []
-opt = int(input("Menú del sistema:\n1-Cargar tokens\n2-Mostar tokens\n3-Agregar/modificar tokens\n4-Guardar tokens\n"
-            "5-Traducir código\n6-Generar CSV\n7-Generar HTML\n8-Submenú de bitácora del sistema\n9-Salir\n"
-            "Porfavor digíte el número de la acción que desea realizar: "))
-while opt != 9:
-    print(menu(opt,tokens))
-    opt = int(input("\nMenú del sistema:\n1-Cargar tokens\n2-Mostar tokens\n3-Agregar/modificar tokens\n4-Guardar tokens\n"
+reemplazos = []
+tiempo = 0.0
+opt = input("Menú del sistema:\n1-Cargar tokens\n2-Mostar tokens\n3-Agregar/modificar tokens\n4-Guardar tokens\n"
+            "5-Traducir código\n6-Generar CSV\n7-Generar HTML\n8-Submenú de bitácora del sistema\n0-Salir\n"
+            "Porfavor digíte el número de la acción que desea realizar: ")
+while opt != "0":
+    tokens,reemplazos,tiempo = menu(opt,tokens,reemplazos,tiempo)
+    opt = input("\nMenú del sistema:\n1-Cargar tokens\n2-Mostar tokens\n3-Agregar/modificar tokens\n4-Guardar tokens\n"
           "5-Traducir código\n6-Generar CSV\n7-Generar HTML\n8-Submenú de bitácora del sistema\n9-Salir\n"
-          "Porfavor digíte el número de la acción que desea realizar: "))
+          "Porfavor digíte el número de la acción que desea realizar: ")
 print("Programa Finalizado")
