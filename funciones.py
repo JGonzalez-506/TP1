@@ -11,10 +11,20 @@ import csv
 #Definición de funciones
 #Cargar tokens
 def validarToken(token):
+    """
+    Funcionamiento: Verifica si un token inicia con caracteres alfabéticos válidos.
+    Entradas: token (list).
+    Salidas: bool (True si el token es válido, False en caso contrario).
+    """
     if re.match('[A-Za-z]', token[0] and token[1]):
         return True
     return False
 def escogerSeparador(separador):
+    """
+    Funcionamiento: Convierte la opción numérica seleccionada por el usuario en su separador correspondiente.
+    Entradas: separador (str).
+    Salidas: str (separador seleccionado).
+    """
     if separador == "1":
         separador = "->"
     elif separador == "2":
@@ -23,6 +33,14 @@ def escogerSeparador(separador):
         separador = "="
     return separador
 def cargarTokens(nombreArchivo,separador,tokens):
+    """
+    Funcionamiento: Carga tokens desde un archivo de texto y los almacena en la lista de tokens.
+    Entradas:
+        nombreArchivo (str): nombre del archivo sin extensión.
+        separador (str): opción del separador seleccionado.
+        tokens (list): lista de tokens ya existentes.
+    Salidas: list (tokens actualizados).
+    """
     separador = escogerSeparador(separador)
     archivo = open(f"{nombreArchivo}.txt", "r")
     for line in archivo:                            #Lee cada línea del archivo
@@ -44,6 +62,15 @@ def cargarTokens(nombreArchivo,separador,tokens):
     return tokens
 #Agregar o modificar tokens
 def agregarModificarTokens(separador,tokens,nuevosTokens,bitacora):
+    """
+    Funcionamiento: Agrega nuevos tokens o modifica los existentes según los datos ingresados por el usuario.
+    Entradas:
+        separador (str): opción del separador seleccionado.
+        tokens (list): lista actual de tokens.
+        nuevosTokens (str): cadena con los nuevos tokens.
+        bitacora (list): lista de registros de acciones.
+    Salidas: list (tokens actualizados o tokens originales si no se guardan los cambios).
+    """
     tokensAntiguos = tokens.copy()
     separador = escogerSeparador(separador)
     nuevosTokens = nuevosTokens.split(".")
@@ -74,6 +101,11 @@ def agregarModificarTokens(separador,tokens,nuevosTokens,bitacora):
     return tokensAntiguos
 #Mostrar tokens
 def mostrarTokens(tokens):
+    """
+    Funcionamiento: Muestra en pantalla todos los tokens almacenados.
+    Entradas: tokens (list).
+    Salidas: str (retorna cadena vacía).
+    """
     if len(tokens) == 0:
         print("No hay tokens cargados.")
     else:
@@ -83,6 +115,13 @@ def mostrarTokens(tokens):
     return ""
 #Traducir código
 def validarTokens(llaves, tokens):
+    """
+    Funcionamiento: Verifica cuáles llaves encontradas coinciden con tokens válidos.
+    Entradas:
+        llaves (list): lista de palabras encontradas.
+        tokens (list): lista de tokens registrados.
+    Salidas: list o bool (lista de coincidencias o False si no existen).
+    """
     temp = []
     for x in llaves:
         for y in tokens:
@@ -92,12 +131,26 @@ def validarTokens(llaves, tokens):
         return temp
     return False
 def cambiarToken(token,tokens):
+    """
+    Funcionamiento: Busca un token y retorna su equivalencia correspondiente.
+    Entradas:
+        token (str): token a reemplazar.
+        tokens (list): lista de tokens registrados.
+    Salidas: str (equivalencia encontrada).
+    """
     for x in tokens:
         if x[0] == token:
             token = x[1]
             break
     return token
 def contarReemplazos(reemplazos, llaves):
+    """
+    Funcionamiento: Cuenta cuántas veces se reemplaza cada token.
+    Entradas:
+        reemplazos (list): lista de reemplazos realizados.
+        llaves (list): lista de tokens encontrados.
+    Salidas: list (reemplazos actualizados).
+    """
     for x in llaves:
         if reemplazos != []:
             repetido = False
@@ -111,6 +164,13 @@ def contarReemplazos(reemplazos, llaves):
             reemplazos.append([x[0], 1])
     return reemplazos
 def compararReemplazosTokens(reemplazos,tokens):
+    """
+    Funcionamiento: Compara los reemplazos realizados con la lista total de tokens.
+    Entradas:
+        reemplazos (list): lista de reemplazos realizados.
+        tokens (list): lista de tokens registrados.
+    Salidas: list (reemplazos completados con tokens no utilizados).
+    """
     for x in tokens:
         cambia = False
         for y in reemplazos:
@@ -121,6 +181,14 @@ def compararReemplazosTokens(reemplazos,tokens):
             reemplazos.append([x[0], 0])
     return reemplazos
 def traducirLinea(line, llaves, tokens):
+    """
+    Funcionamiento: Traduce una línea de texto reemplazando los tokens encontrados.
+    Entradas:
+        line (str): línea original.
+        llaves (list): lista de coincidencias encontradas.
+        tokens (list): lista de tokens registrados.
+    Salidas: str (línea traducida).
+    """
     indice = 0
     primera = True
     traduccion = ""
@@ -144,6 +212,14 @@ def traducirLinea(line, llaves, tokens):
     traduccion += line[fin:len(line)]
     return traduccion
 def traducirCodigo(archivo, nArchivo, tokens):
+    """
+    Funcionamiento: Traduce el contenido de un archivo utilizando los tokens registrados.
+    Entradas:
+        archivo (str): archivo original.
+        nArchivo (str): archivo donde se guardará la traducción.
+        tokens (list): lista de tokens registrados.
+    Salidas: tuple (reemplazos realizados y tiempo de ejecución).
+    """
     reemplazos = []
     llaves = []
     tiempo = 0.0
@@ -152,7 +228,7 @@ def traducirCodigo(archivo, nArchivo, tokens):
         f = open(archivo, "r")
         g = open(nArchivo, "a")
         for line in f:
-            for llave in re.finditer(r"[A-Za-z0-9]+", line):
+            for llave in re.finditer(r"[A-Za-z0-9]+", line):        #Expresión regular para encontrar datos alfanuméricos
                 temp = []
                 temp.append(llave.group())
                 temp.append(llave.start())
@@ -176,6 +252,11 @@ def traducirCodigo(archivo, nArchivo, tokens):
         print(f"No se encuentra el archivo {archivo}")
     return reemplazos,tiempo
 def traducirCodigoAux(tokens):
+    """
+    Funcionamiento: Solicita los archivos necesarios y ejecuta la traducción del código.
+    Entradas: tokens (list).
+    Salidas: tuple (resultado de la traducción).
+    """
     archivo = input("Introduzca el archivo a traducir, indique la extensión: ")
     nArchivo = input("Introduzca el nombre del archivo donde desea guardar la traducción, indique la extensión (Ej. traduccion.txt): ")
     reemplazos = traducirCodigo(archivo, nArchivo, tokens)
@@ -280,11 +361,21 @@ def filtrarPorPalabra(bitacora):
         print("No se encontraron coincidencias.")
 #Reporte HTML
 def sumarReemplazos(reemplazos):
+    """
+    Funcionamiento: Calcula la cantidad total de reemplazos realizados.
+    Entradas: reemplazos (list).
+    Salidas: int (suma total de reemplazos).
+    """
     suma = 0
     for x in reemplazos:
         suma += x[1]
     return suma
 def sacarPorcentajeReemplazos(reemplazos):
+    """
+    Funcionamiento: Calcula el porcentaje de palabras que fueron reemplazadas.
+    Entradas: reemplazos (list).
+    Salidas: float (porcentaje de reemplazos).
+    """
     palabras = 0
     cambios = 0
     for x in reemplazos:
@@ -294,6 +385,13 @@ def sacarPorcentajeReemplazos(reemplazos):
     porcentaje = (cambios*100)/palabras
     return porcentaje
 def crearTabla(reemplazos,tokens):
+    """
+    Funcionamiento: Genera el código HTML de una tabla con los reemplazos realizados.
+    Entradas:
+        reemplazos (list): lista de reemplazos.
+        tokens (list): lista de tokens registrados.
+    Salidas: str (tabla HTML generada).
+    """
     tabla = """"""
     for x in reemplazos:
         token = x[0]
@@ -312,6 +410,15 @@ def crearTabla(reemplazos,tokens):
         tabla += temp
     return tabla
 def generarHTML(titulo,reemplazos,tiempo,tokens):
+    """
+    Funcionamiento: Genera un reporte HTML con información sobre la traducción realizada.
+    Entradas:
+        titulo (str): título del reporte.
+        reemplazos (list): lista de reemplazos realizados.
+        tiempo (str): duración del proceso.
+        tokens (list): lista de tokens registrados.
+    Salidas: str (mensaje de confirmación con el nombre del archivo generado).
+    """
     fecha = datetime.now()
     fecha = fecha.strftime("%d-%m-%Y_%H-%M-%S")
     nombreArchivo = f"reporteHTML_{fecha}.html"

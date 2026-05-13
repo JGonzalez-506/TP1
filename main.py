@@ -8,6 +8,13 @@ import funciones
 
 #Definición de funciones
 def submenu(opt,bitacora):
+    """
+    Funcionamiento: Ejecuta las opciones disponibles del submenú de bitácora.
+    Entradas:
+        opt (str): opción seleccionada por el usuario.
+        bitacora(list): lista con los registros de acciones realizadas.
+    Salidas: None.
+    """
     if opt == "1":
         funciones.filtrarPorDia(bitacora)
         funciones.insertarBitacora(bitacora, "Se buscó en bitácora por fecha")
@@ -15,6 +22,17 @@ def submenu(opt,bitacora):
         funciones.filtrarPorPalabra(bitacora)
         funciones.insertarBitacora(bitacora, "Se buscó en bitácora por palabra clave")
 def menu(opt,tokens,reemplazos,tiempo,bitacora):
+    """
+    Funcionamiento: Ejecuta las opciones principales del menú del sistema según la selección del usuario.
+    Entradas:
+        opt (str): opción seleccionada por el usuario.
+        tokens (list): lista de tokens almacenados.
+        reemplazos (list): lista de reemplazos realizados durante la traducción.
+        tiempo (float): tiempo empleado en el proceso de traducción.
+        bitacora (list): lista con los registros de acciones realizadas.
+    Salidas:
+        tuple: retorna tokens, reemplazos y tiempo actualizados.
+    """
     if opt == "1":
         nombreArchivo = input("\nIndique el nombre del archivo .txt donde están almacenados los tokens: ")
         separador = input("Indique el separador utilizado:\n1-'->'\n2-','\n3-'='\nOpción: ")
